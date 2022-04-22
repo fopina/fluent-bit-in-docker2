@@ -848,8 +848,8 @@ static struct flb_config_map config_map[] = {
 };
 
 /* Plugin reference */
-struct flb_input_plugin in_docker_plugin = {
-    .name         = "docker",
+struct flb_input_plugin in_docker2_plugin = {
+    .name         = "docker2",
     .description  = "Docker containers metrics",
     .cb_init      = cb_docker_init,
     .cb_pre_run   = NULL,
