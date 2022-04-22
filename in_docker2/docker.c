@@ -239,11 +239,6 @@ static char *extract_name(char *line, char *start, int skip)
 
     if (start != NULL) {
         curr = start + skip;
-        // look for start of json string
-        while (*curr != '"') {
-            curr++;
-        }
-        curr++;
         while (*curr != '"') {
             buff[len++] = *curr;
             curr++;
@@ -287,7 +282,7 @@ static char *get_container_name(struct flb_docker *ctx, char *id)
     while ((line = read_line(f))) {
         char *index = strstr(line, DOCKER_NAME_ARG);
         if (index != NULL) {
-            container_name = extract_name(line, index, strlen(DOCKER_NAME_ARG) + 1);
+            container_name = extract_name(line, index, sizeof(DOCKER_NAME_ARG));
             flb_free(line);
             break;
         }
