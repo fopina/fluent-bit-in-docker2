@@ -231,7 +231,6 @@ static char *get_container_name(struct flb_docker *ctx, char *id)
     char *line;
 
     config_file = get_config_file(id);
-    flb_plg_trace(ctx->ins, "%s - CONFIG_FILE %s", __FUNCTION__, config_file);
     if (!config_file) {
         return NULL;
     }
@@ -277,7 +276,7 @@ static cpu_snapshot *get_docker_cpu_snapshot(struct flb_docker *ctx, char *id)
     f = fopen(usage_file, "r");
     if (!f) {
         flb_errno();
-        flb_plg_error(ctx->ins, "error gathering XCPU data from %s",
+        flb_plg_error(ctx->ins, "error gathering CPU data from %s",
                       usage_file);
         flb_free(usage_file);
         return NULL;

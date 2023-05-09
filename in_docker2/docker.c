@@ -136,7 +136,6 @@ static struct mk_list *get_docker_stats(struct flb_docker *ctx, struct mk_list *
     mk_list_init(snapshots);
     mk_list_foreach(head, dockers) {
         docker = mk_list_entry(head, docker_info, _head);
-        flb_plg_trace(ctx->ins, "%s - docker %d", __FUNCTION__, docker->id);
         snapshot = init_snapshot(docker->id);
         if (snapshot == NULL) {
             free_snapshots(snapshots);
