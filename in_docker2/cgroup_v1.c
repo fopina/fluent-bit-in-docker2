@@ -231,6 +231,7 @@ static char *get_container_name(struct flb_docker *ctx, char *id)
     char *line;
 
     config_file = get_config_file(id);
+    flb_plg_trace(ctx->ins, "%s - CONFIG_FILE %s", __FUNCTION__, config_file);
     if (!config_file) {
         return NULL;
     }

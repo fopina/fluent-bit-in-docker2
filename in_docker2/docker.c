@@ -124,18 +124,24 @@ static struct mk_list *get_docker_stats(struct flb_docker *ctx, struct mk_list *
     struct mk_list *snapshots;
 
     if (!dockers) {
+        flb_plg_trace(ctx->ins, "%s - no dockers", __FUNCTION__);
         return NULL;
     }
+    flb_plg_trace(ctx->ins, "%s - going in", __FUNCTION__);
 
     snapshots = flb_malloc(sizeof(struct mk_list));
     if (!snapshots) {
+        flb_plg_trace(ctx->ins, "%s - no snapies", __FUNCTION__);
         flb_errno();
         return NULL;
     }
 
+
     mk_list_init(snapshots);
     mk_list_foreach(head, dockers) {
+        flb_plg_trace(ctx->ins, "%s - docker", __FUNCTION__);
         docker = mk_list_entry(head, docker_info, _head);
+        flb_plg_trace(ctx->ins, "%s - docker %d", __FUNCTION__, docker->id);
         snapshot = init_snapshot(docker->id);
         if (snapshot == NULL) {
             free_snapshots(snapshots);
