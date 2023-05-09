@@ -9,6 +9,8 @@ dev:
 build-tester:
 	docker build -f Dockerfile.build --target tester -t tmp-fluent-bit-in-docker2-tester .
 
+# if plugin does not work, make sure your docker is running with cgroups v1
+# docker for mac: update deprecatedCgroupv1 to true in "$HOME/Library/Group Containers/group.com.docker/settings.json"
 .ONESHELL:
 .PHONY: test
 test: dev build-tester 
@@ -27,7 +29,7 @@ test: dev build-tester
 	}
 	trap tearDown EXIT
 
-	docker exec -ti tmp-fluent-bit-in-docker2-testrun docker run -d nginx
+	docker exec -ti tmp-fluent-bit-in-docker2-testrun docker run -d alpine tail -f /dev/null
 	docker exec -ti tmp-fluent-bit-in-docker2-testrun \
 			/fluent-bit/bin/fluent-bit \
 			-f 1 \

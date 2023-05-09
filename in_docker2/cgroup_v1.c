@@ -116,7 +116,7 @@ static char *get_cpu_used_file(char *id)
         return NULL;
     }
 
-    strcat(path, DOCKER_CGROUP_V1_CPU_DIR);
+    strcat(path, DOCKER_CGROUP_V1_CPUACCT_DIR);
     strcat(path, "/");
     strcat(path, id);
     strcat(path, "/");
@@ -277,7 +277,7 @@ static cpu_snapshot *get_docker_cpu_snapshot(struct flb_docker *ctx, char *id)
     f = fopen(usage_file, "r");
     if (!f) {
         flb_errno();
-        flb_plg_error(ctx->ins, "error gathering CPU data from %s",
+        flb_plg_error(ctx->ins, "error gathering XCPU data from %s",
                       usage_file);
         flb_free(usage_file);
         return NULL;
@@ -386,7 +386,7 @@ static mem_snapshot *get_docker_mem_snapshot(struct flb_docker *ctx, char *id)
     return snapshot;
 }
 
-int in_docker_set_cgroup_api_v1(struct cgroup_api *api)
+int in_docker_set_cgroup_api_v1x(struct cgroup_api *api)
 {
     api->cgroup_version = 1;
     api->get_active_docker_ids = get_active_dockers;

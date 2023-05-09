@@ -124,25 +124,17 @@ static struct mk_list *get_docker_stats(struct flb_docker *ctx, struct mk_list *
     struct mk_list *snapshots;
 
     if (!dockers) {
-        flb_plg_trace(ctx->ins, "%s - no dockers", __FUNCTION__);
         return NULL;
     }
 
     snapshots = flb_malloc(sizeof(struct mk_list));
     if (!snapshots) {
-        flb_plg_trace(ctx->ins, "%s - no snapies", __FUNCTION__);
         flb_errno();
         return NULL;
     }
 
-    flb_plg_trace(ctx->ins, "%s - going in", __FUNCTION__);
-
     mk_list_init(snapshots);
-
-    flb_plg_trace(ctx->ins, "%s - going in2", __FUNCTION__);
-
     mk_list_foreach(head, dockers) {
-        flb_plg_trace(ctx->ins, "%s - docker", __FUNCTION__);
         docker = mk_list_entry(head, docker_info, _head);
         flb_plg_trace(ctx->ins, "%s - docker %d", __FUNCTION__, docker->id);
         snapshot = init_snapshot(docker->id);
@@ -301,7 +293,7 @@ static int cb_docker_init(struct flb_input_instance *in,
         return -1;
     }
     ctx->ins = in;
-    in_docker_set_cgroup_api_v1(&ctx->cgroup_api); /* TODO: support cgroup v2*/
+    in_docker_set_cgroup_api_v1x(&ctx->cgroup_api); /* TODO: support cgroup v2*/
 
     init_filter_lists(in, ctx);
 
@@ -470,7 +462,6 @@ static int cb_docker_collect(struct flb_input_instance *ins,
 
     /* Get current active dockers. */
     active = ctx->cgroup_api.get_active_docker_ids();
-    flb_plg_trace(ctx->ins, "%s - active %s", __FUNCTION__, active);
 
     filtered = apply_filters(ctx, active);
     if (!filtered) {
