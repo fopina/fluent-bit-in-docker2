@@ -127,7 +127,6 @@ static struct mk_list *get_docker_stats(struct flb_docker *ctx, struct mk_list *
         flb_plg_trace(ctx->ins, "%s - no dockers", __FUNCTION__);
         return NULL;
     }
-    flb_plg_trace(ctx->ins, "%s - going in", __FUNCTION__);
 
     snapshots = flb_malloc(sizeof(struct mk_list));
     if (!snapshots) {
@@ -136,8 +135,12 @@ static struct mk_list *get_docker_stats(struct flb_docker *ctx, struct mk_list *
         return NULL;
     }
 
+    flb_plg_trace(ctx->ins, "%s - going in", __FUNCTION__);
 
     mk_list_init(snapshots);
+
+    flb_plg_trace(ctx->ins, "%s - going in2", __FUNCTION__);
+
     mk_list_foreach(head, dockers) {
         flb_plg_trace(ctx->ins, "%s - docker", __FUNCTION__);
         docker = mk_list_entry(head, docker_info, _head);
@@ -467,6 +470,7 @@ static int cb_docker_collect(struct flb_input_instance *ins,
 
     /* Get current active dockers. */
     active = ctx->cgroup_api.get_active_docker_ids();
+    flb_plg_trace(ctx->ins, "%s - active %s", __FUNCTION__, active);
 
     filtered = apply_filters(ctx, active);
     if (!filtered) {
