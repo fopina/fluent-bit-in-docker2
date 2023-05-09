@@ -292,7 +292,7 @@ static int cb_docker_init(struct flb_input_instance *in,
         return -1;
     }
     ctx->ins = in;
-    in_docker_set_cgroup_api_v1(&ctx->cgroup_api); /* TODO: support cgroup v2*/
+    in_docker_set_cgroup_api_v1x(&ctx->cgroup_api); /* TODO: support cgroup v2*/
 
     init_filter_lists(in, ctx);
 

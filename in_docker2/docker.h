@@ -34,6 +34,7 @@
 #define DOCKER_SHORT_ID_LEN   12
 #define DOCKER_CGROUP_V1_MEM_DIR "/sys/fs/cgroup/memory/docker"
 #define DOCKER_CGROUP_V1_CPU_DIR "/sys/fs/cgroup/cpu/docker"
+#define DOCKER_CGROUP_V1_CPUACCT_DIR "/sys/fs/cgroup/cpuacct/docker"
 #define DOCKER_CGROUP_V1_MEM_LIMIT_FILE "memory.limit_in_bytes"
 #define DOCKER_CGROUP_V1_MEM_USAGE_FILE "memory.usage_in_bytes"
 #define DOCKER_CGROUP_V1_CPU_USAGE_FILE "cpuacct.usage"
