@@ -30,6 +30,7 @@ test: dev build-tester
 	trap tearDown EXIT
 
 	docker exec -ti tmp-fluent-bit-in-docker2-testrun docker run -d alpine tail -f /dev/null
+	docker exec -ti tmp-fluent-bit-in-docker2-testrun docker ps
 	docker exec -ti tmp-fluent-bit-in-docker2-testrun \
 			/fluent-bit/bin/fluent-bit \
 			-f 1 \
