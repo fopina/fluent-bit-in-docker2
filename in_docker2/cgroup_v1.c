@@ -213,7 +213,7 @@ static char *get_config_file(struct flb_docker *ctx, char *id)
     return path;
 }
 
-static char *extract_name(char *line, char *start)
+static char *extract_name(char *line, char *start, int skip)
 {
     int skip = 9;
     int len = 0;
@@ -223,6 +223,11 @@ static char *extract_name(char *line, char *start)
 
     if (start != NULL) {
         curr = start + skip;
+        // look for start of json string
+        while (*curr != '"') {
+            curr++;
+        }
+        curr++;
         while (*curr != '"') {
             buff[len++] = *curr;
             curr++;
@@ -266,7 +271,7 @@ static char *get_container_name(struct flb_docker *ctx, char *id)
     while ((line = read_line(f))) {
         char *index = strstr(line, DOCKER_NAME_ARG);
         if (index != NULL) {
-            container_name = extract_name(line, index);
+            container_name = extract_name(line, index, strlen(DOCKER_NAME_ARG) + 1);
             flb_free(line);
             break;
         }
