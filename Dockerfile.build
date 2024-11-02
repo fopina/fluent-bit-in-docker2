@@ -1,4 +1,4 @@
-FROM ghcr.io/fopina/fluent-bit-plugin-dev:v2.1.2 AS builder
+FROM ghcr.io/fopina/fluent-bit-plugin-dev:v3.1.9 AS builder
 
 RUN apt update && apt install -y libc-ares-dev
 
@@ -12,7 +12,7 @@ RUN make
 RUN ls -la
 
 # stage only for testing
-FROM fluent/fluent-bit:2.1.2-debug AS tester
+FROM fluent/fluent-bit:3.1.9-debug AS tester
 
 RUN apt-get update \
  && apt-get install -y ca-certificates curl gnupg \
