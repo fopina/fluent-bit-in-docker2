@@ -1,5 +1,6 @@
 export SHELL:=/bin/bash
 export SHELLOPTS:=$(if $(SHELLOPTS),$(SHELLOPTS):)pipefail:errexit
+BASE_VERSION:=3.1.9
 
 dev:
 	docker build -f Dockerfile.build -o dist .
@@ -9,8 +10,7 @@ dev:
 build-tester:
 	docker build -f Dockerfile.build --target tester -t tmp-fluent-bit-in-docker2-tester .
 
-# if plugin does not work, make sure your docker is running with cgroups v1
-# docker for mac: update deprecatedCgroupv1 to true in "$HOME/Library/Group Containers/group.com.docker/settings.json"
+# use `gmake` from homebrew, not `make`
 .ONESHELL:
 .PHONY: test
 test: dev build-tester 
@@ -30,6 +30,7 @@ test: dev build-tester
 	trap tearDown EXIT
 
 	docker exec -ti tmp-fluent-bit-in-docker2-testrun docker run -d alpine tail -f /dev/null
+	docker exec -ti tmp-fluent-bit-in-docker2-testrun docker ps
 	docker exec -ti tmp-fluent-bit-in-docker2-testrun \
 			/fluent-bit/bin/fluent-bit \
 			-f 1 \
@@ -38,3 +39,12 @@ test: dev build-tester
 			-pLog_Level=trace \
 			-o stdout -m '*' \
 			-o exit -m '*'
+
+
+update-plugin:
+	curl https://github.com/fluent/fluent-bit/archive/refs/tags/v$(BASE_VERSION).zip -Lo plugin.zip
+	unzip plugin.zip 'fluent-bit-$(BASE_VERSION)/plugins/in_docker/*'
+	rm plugin.zip
+	rm -fr upstream-in_docker
+	mv 'fluent-bit-$(BASE_VERSION)/plugins/in_docker/' upstream-in_docker/
+	rm -fr 'fluent-bit-$(BASE_VERSION)'
