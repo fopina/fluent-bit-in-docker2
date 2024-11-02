@@ -1,7 +1,7 @@
 on:
   push:
-    branches:
-    - 'dev-*'
+    branches-ignore:
+    - main
 
 name: Test build
 
