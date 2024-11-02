@@ -25,7 +25,7 @@
 #include "docker.h"
 
 /* This method returns list of currently running docker ids. */
-static struct mk_list *get_active_dockers(struct flb_docker2 *ctx)
+static struct mk_list *get_active_dockers(struct flb_docker *ctx)
 {
     DIR *dp;
     struct dirent *ep;
@@ -119,7 +119,7 @@ static char *read_line(FILE *fin)
 }
 
 /* This routine returns path to docker's cgroup CPU usage file. */
-static char *get_cpu_used_file(struct flb_docker2 *ctx, char *id)
+static char *get_cpu_used_file(struct flb_docker *ctx, char *id)
 {
     char *path;
     int len = 0;
@@ -149,7 +149,7 @@ static char *get_cpu_used_file(struct flb_docker2 *ctx, char *id)
 }
 
 /* This routine returns path to docker's cgroup memory limit file. */
-static char *get_mem_limit_file(struct flb_docker2 *ctx, char *id)
+static char *get_mem_limit_file(struct flb_docker *ctx, char *id)
 {
     char *path;
     int len = 0;
@@ -178,7 +178,7 @@ static char *get_mem_limit_file(struct flb_docker2 *ctx, char *id)
 }
 
 /* This routine returns path to docker's cgroup memory used file. */
-static char *get_mem_used_file(struct flb_docker2 *ctx, char *id)
+static char *get_mem_used_file(struct flb_docker *ctx, char *id)
 {
     char *path;
     int len = 0;
@@ -206,7 +206,7 @@ static char *get_mem_used_file(struct flb_docker2 *ctx, char *id)
     return path;
 }
 
-static char *get_config_file(struct flb_docker2 *ctx, char *id)
+static char *get_config_file(struct flb_docker *ctx, char *id)
 {
     char *path;
     int len = 0;
@@ -260,7 +260,7 @@ static char *extract_name(char *line, char *start)
     return NULL;
 }
 
-static char *get_container_name(struct flb_docker2 *ctx, char *id)
+static char *get_container_name(struct flb_docker *ctx, char *id)
 {
     char *container_name = NULL;
     char *config_file;
@@ -284,7 +284,6 @@ static char *get_container_name(struct flb_docker2 *ctx, char *id)
         char *index = strstr(line, DOCKER_NAME_ARG);
         if (index != NULL) {
             container_name = extract_name(line, index);
-            container_name = "ehlo";
             flb_free(line);
             break;
         }
@@ -298,7 +297,7 @@ static char *get_container_name(struct flb_docker2 *ctx, char *id)
 }
 
 /* Returns CPU metrics for docker id. */
-static cpu_snapshot *get_docker_cpu_snapshot(struct flb_docker2 *ctx, char *id)
+static cpu_snapshot *get_docker_cpu_snapshot(struct flb_docker *ctx, char *id)
 {
     int c;
     unsigned long cpu_used = 0;
@@ -355,7 +354,7 @@ static cpu_snapshot *get_docker_cpu_snapshot(struct flb_docker2 *ctx, char *id)
     return snapshot;
 }
 
-static uint64_t read_file_uint64(struct flb_docker2 *ctx, flb_sds_t path)
+static uint64_t read_file_uint64(struct flb_docker *ctx, flb_sds_t path)
 {
     int c;
     uint64_t value = UINT64_MAX;
@@ -379,7 +378,7 @@ static uint64_t read_file_uint64(struct flb_docker2 *ctx, flb_sds_t path)
 }
 
 /* Returns memory used by a docker in bytes. */
-static uint64_t get_docker_mem_used(struct flb_docker2 *ctx, char *id)
+static uint64_t get_docker_mem_used(struct flb_docker *ctx, char *id)
 {
     char *usage_file = NULL;
     uint64_t mem_used = 0;
@@ -396,7 +395,7 @@ static uint64_t get_docker_mem_used(struct flb_docker2 *ctx, char *id)
 }
 
 /* Returns memory limit for a docker in bytes. */
-static uint64_t get_docker_mem_limit(struct flb_docker2 *ctx, char *id)
+static uint64_t get_docker_mem_limit(struct flb_docker *ctx, char *id)
 {
     int c;
     char *limit_file = get_mem_limit_file(ctx, id);
@@ -440,7 +439,7 @@ static uint64_t get_docker_mem_limit(struct flb_docker2 *ctx, char *id)
 }
 
 /* Get memory snapshot for a docker id. */
-static mem_snapshot *get_docker_mem_snapshot(struct flb_docker2 *ctx, char *id)
+static mem_snapshot *get_docker_mem_snapshot(struct flb_docker *ctx, char *id)
 {
     mem_snapshot *snapshot = NULL;
 
@@ -456,7 +455,7 @@ static mem_snapshot *get_docker_mem_snapshot(struct flb_docker2 *ctx, char *id)
     return snapshot;
 }
 
-int in_docker_set_cgroup_api_v2(struct cgroup_api *api)
+int in_docker_set_cgroup_api_v2x(struct cgroup_api *api)
 {
     api->cgroup_version = 2;
     api->get_active_docker_ids = get_active_dockers;
