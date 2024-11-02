@@ -85,20 +85,20 @@ typedef struct docker_snapshot {
     struct mk_list _head;
 } docker_snapshot;
 
-struct flb_docker;
+struct flb_docker2;
 
 struct cgroup_api {
     int cgroup_version;
     struct mk_list* (*get_active_docker_ids) ();
-    char*           (*get_container_name) (struct flb_docker *, char *);
-    cpu_snapshot*   (*get_cpu_snapshot)   (struct flb_docker *, char *);
-    mem_snapshot*   (*get_mem_snapshot)   (struct flb_docker *, char *);
+    char*           (*get_container_name) (struct flb_docker2 *, char *);
+    cpu_snapshot*   (*get_cpu_snapshot)   (struct flb_docker2 *, char *);
+    mem_snapshot*   (*get_mem_snapshot)   (struct flb_docker2 *, char *);
 };
 int in_docker_set_cgroup_api_v1(struct cgroup_api *api);
 int in_docker_set_cgroup_api_v2(struct cgroup_api *api);
 
 /* Docker Input configuration & context */
-struct flb_docker {
+struct flb_docker2 {
     int coll_fd;                /* collector id/fd */
     int interval_sec;           /* interval collection time (Second) */
     int interval_nsec;          /* interval collection time (Nanosecond) */

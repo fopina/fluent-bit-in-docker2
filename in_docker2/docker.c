@@ -116,7 +116,7 @@ static bool is_exists(struct mk_list *list, char *id)
 
 static void free_snapshots(struct mk_list *snaps);
 /* Returns dockers CPU/Memory metrics. */
-static struct mk_list *get_docker_stats(struct flb_docker *ctx, struct mk_list *dockers)
+static struct mk_list *get_docker_stats(struct flb_docker2 *ctx, struct mk_list *dockers)
 {
     docker_snapshot *snapshot;
     struct docker_info *docker;
@@ -205,7 +205,7 @@ static struct mk_list *get_ids_from_str(char *space_delimited_str)
 
 /* Initializes blacklist/whitelist.  */
 static void init_filter_lists(struct flb_input_instance *f_ins,
-                              struct flb_docker *ctx)
+                              struct flb_docker2 *ctx)
 {
     struct mk_list *head;
     struct flb_kv *kv;
@@ -227,7 +227,7 @@ static void init_filter_lists(struct flb_input_instance *f_ins,
 }
 
 /* Filters list of active dockers as per config. This returns a new list */
-static struct mk_list *apply_filters(struct flb_docker *ctx,
+static struct mk_list *apply_filters(struct flb_docker2 *ctx,
                                      struct mk_list *dockers)
 {
     struct mk_list *head;
@@ -282,7 +282,7 @@ static struct mk_list *apply_filters(struct flb_docker *ctx,
  * Calculate which cgroup version is used on host by checing existence of
  * cgroup.controllers file (if it exists, it is V2).
  */
-static int get_cgroup_version(struct flb_docker *ctx)
+static int get_cgroup_version(struct flb_docker2 *ctx)
 {
     char path[SYSFS_FILE_PATH_SIZE];
     snprintf(path, sizeof(path), "%s/%s", ctx->sysfs_path, CGROUP_V2_PATH);
@@ -294,10 +294,10 @@ static int cb_docker_init(struct flb_input_instance *in,
                           struct flb_config *config, void *data)
 {
     int ret;
-    struct flb_docker *ctx;
+    struct flb_docker2 *ctx;
 
     /* Allocate space for the configuration */
-    ctx = flb_calloc(1, sizeof(struct flb_docker));
+    ctx = flb_calloc(1, sizeof(struct flb_docker2));
     if (!ctx) {
         flb_errno();
         return -1;
@@ -358,7 +358,7 @@ static int cb_docker_init(struct flb_input_instance *in,
 }
 
 /* Flush snapshot as a message for output. */
-static void flush_snapshot(struct flb_docker *ctx,
+static void flush_snapshot(struct flb_docker2 *ctx,
                            struct flb_input_instance *i_ins,
                            docker_snapshot *snapshot)
 {
@@ -419,7 +419,7 @@ static void flush_snapshot(struct flb_docker *ctx,
     flb_log_event_encoder_reset(&ctx->log_encoder);
 }
 
-static void flush_snapshots(struct flb_docker *ctx,
+static void flush_snapshots(struct flb_docker2 *ctx,
                             struct flb_input_instance *i_ins,
                             struct mk_list *snapshots)
 {
@@ -478,7 +478,7 @@ static int cb_docker_collect(struct flb_input_instance *ins,
     struct mk_list *active;
     struct mk_list *filtered;
     struct mk_list *snaps;
-    struct flb_docker *ctx = in_context;
+    struct flb_docker2 *ctx = in_context;
     (void) config;
 
     /* Get current active dockers. */
@@ -517,20 +517,20 @@ static int cb_docker_collect(struct flb_input_instance *ins,
 
 static void cb_docker_pause(void *data, struct flb_config *config)
 {
-    struct flb_docker *ctx = data;
+    struct flb_docker2 *ctx = data;
     flb_input_collector_pause(ctx->coll_fd, ctx->ins);
 }
 
 static void cb_docker_resume(void *data, struct flb_config *config)
 {
-    struct flb_docker *ctx = data;
+    struct flb_docker2 *ctx = data;
     flb_input_collector_resume(ctx->coll_fd, ctx->ins);
 }
 
 static int cb_docker_exit(void *data, struct flb_config *config)
 {
     (void) *config;
-    struct flb_docker *ctx = data;
+    struct flb_docker2 *ctx = data;
 
     /* done */
     flb_log_event_encoder_destroy(&ctx->log_encoder);
@@ -545,12 +545,12 @@ static int cb_docker_exit(void *data, struct flb_config *config)
 static struct flb_config_map config_map[] = {
     {
       FLB_CONFIG_MAP_INT, "interval_sec", DEFAULT_INTERVAL_SEC,
-      0, FLB_TRUE, offsetof(struct flb_docker, interval_sec),
+      0, FLB_TRUE, offsetof(struct flb_docker2, interval_sec),
       "Set the collector interval"
     },
     {
       FLB_CONFIG_MAP_INT, "interval_nsec", DEFAULT_INTERVAL_NSEC,
-      0, FLB_TRUE, offsetof(struct flb_docker, interval_nsec),
+      0, FLB_TRUE, offsetof(struct flb_docker2, interval_nsec),
       "Set the collector interval (nanoseconds)"
     },
     {
@@ -565,12 +565,12 @@ static struct flb_config_map config_map[] = {
     },
     {
       FLB_CONFIG_MAP_STR, "path.sysfs", DEFAULT_SYSFS_PATH,
-      0, FLB_TRUE, offsetof(struct flb_docker, sysfs_path),
+      0, FLB_TRUE, offsetof(struct flb_docker2, sysfs_path),
       "sysfs mount point"
     },
     {
       FLB_CONFIG_MAP_STR, "path.containers", DEFAULT_CONTAINERS_PATH,
-      0, FLB_TRUE, offsetof(struct flb_docker, containers_path),
+      0, FLB_TRUE, offsetof(struct flb_docker2, containers_path),
       "containers directory"
     },
     /* EOF */
