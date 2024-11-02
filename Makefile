@@ -23,7 +23,7 @@ test: dev build-tester
 			--name tmp-fluent-bit-in-docker2-testrun \
 			tmp-fluent-bit-in-docker2-tester \
 			dockerd
-	sleep 1
+
 	function tearDown {
 		docker kill tmp-fluent-bit-in-docker2-testrun
 	}
